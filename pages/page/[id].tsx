@@ -1,5 +1,6 @@
 import React from "react";
 import { GetStaticPaths, GetStaticProps } from "next";
+import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
@@ -9,6 +10,7 @@ import {
   Typography,
   CardContent,
   Grid,
+  Button,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 import GitHubIcon from "@material-ui/icons/GitHub";
@@ -39,7 +41,7 @@ export default function Home({ projects, total, page }) {
         justify="center"
         alignItems="center"
       >
-        <p>Loading..</p>;
+        <p>Loading..</p>
       </Grid>
     );
   }
@@ -64,14 +66,13 @@ export default function Home({ projects, total, page }) {
         {projects.map((project, index) => (
           <Grid key={project?.sys?.id} item xs={4}>
             <Card variant="outlined" className={classes.root}>
-              {/* <Link href={`/project/${project.fields.title}`}> */}
               <CardActionArea>
                 <Image
                   src={`https:${project.fields.image.fields.file.url}`}
                   alt={project.fields.title}
                   layout="responsive"
-                  height={200}
                   width={600}
+                  height={600}
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">
@@ -81,16 +82,11 @@ export default function Home({ projects, total, page }) {
                 </CardContent>
               </CardActionArea>
               <CardActions>
-                <GitHubIcon>
-                  <a href={project.fields.github} target="__blank">
-                    Github
-                  </a>
-                </GitHubIcon>
-                <LinkIcon>
-                  <a href={project.fields.live} target="__blank">
-                    Live
-                  </a>
-                </LinkIcon>
+                <Link href={`/project/${project.sys.id}`}>
+                  <Button variant="contained" color="primary">
+                    <a>Details</a>
+                  </Button>
+                </Link>
               </CardActions>
               {/* </Link> */}
             </Card>

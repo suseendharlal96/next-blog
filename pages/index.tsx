@@ -10,10 +10,9 @@ import {
   Typography,
   CardContent,
   Grid,
+  Button,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import GitHubIcon from "@material-ui/icons/GitHub";
-import LinkIcon from "@material-ui/icons/Link";
 import useStyles from "../styles/styles";
 import styles from "../styles/Home.module.scss";
 import { client } from "../util/contentful";
@@ -65,18 +64,12 @@ export default function Home({ projects, total }) {
                 </CardContent>
               </CardActionArea>
               <CardActions>
-                <GitHubIcon>
-                  <a href={project.fields.github} target="__blank">
-                    Github
-                  </a>
-                </GitHubIcon>
-                <LinkIcon>
-                  <a href={project.fields.live} target="__blank">
-                    Live
-                  </a>
-                </LinkIcon>
+                <Link href={`/project/${project.sys.id}`}>
+                  <Button variant="contained" color="primary">
+                    <a>Details</a>
+                  </Button>
+                </Link>
               </CardActions>
-              {/* </Link> */}
             </Card>
           </Grid>
         ))}
@@ -92,7 +85,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const projects: any = await client.getEntries({
     content_type: "projects",
     limit: 5,
-    order:'fields.title'
+    order: "fields.title",
   });
   return {
     props: {
