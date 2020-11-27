@@ -1,6 +1,5 @@
 import React from "react";
-import { GetStaticProps } from "next";
-import Link from "next/link";
+import { GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
@@ -14,21 +13,42 @@ import {
 import Pagination from "@material-ui/lab/Pagination";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import LinkIcon from "@material-ui/icons/Link";
-import useStyles from "../styles/styles";
-import styles from "../styles/Home.module.scss";
-import { client } from "../util/contentful";
+import useStyles from "../../styles/styles";
+import styles from "../../styles/Home.module.scss";
+import { client } from "../../util/contentful";
 
-export default function Home({ projects, total }) {
-  const classes = useStyles();
+export default function Home({ projects, total, page }) {
   const router = useRouter();
+  const classes = useStyles();
+
   const handleChange = async (e, value) => {
-    router.push(`/page/${value}`);
+    if (value === 1) {
+      router.push("/");
+    } else {
+      router.push(`/page/${value}`);
+    }
   };
+
+  if (router.isFallback) {
+    return (
+      <Grid
+        container
+        direction="row"
+        spacing={4}
+        wrap="wrap"
+        justify="center"
+        alignItems="center"
+      >
+        <p>Loading..</p>;
+      </Grid>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <Pagination
         count={total}
-        page={1}
+        page={+page}
         showFirstButton
         showLastButton
         onChange={handleChange}
@@ -50,17 +70,13 @@ export default function Home({ projects, total }) {
                   src={`https:${project.fields.image.fields.file.url}`}
                   alt={project.fields.title}
                   layout="responsive"
+                  height={200}
                   width={600}
-                  height={600}
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">
-                    <Link href={`/projects/${project.fields}`}>
-                      <a>
-                        {index + 1 + ". "}
-                        {project.fields.title}
-                      </a>
-                    </Link>
+                    {(+router.query.id - 1) * 5 + index + 1 + ". "}{" "}
+                    {project.fields.title}
                   </Typography>
                 </CardContent>
               </CardActionArea>
@@ -85,20 +101,29 @@ export default function Home({ projects, total }) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const allProjects: any = await client.getEntries({
     content_type: "projects",
   });
   const projects: any = await client.getEntries({
-    content_type: "projects",
     limit: 5,
-    order:'fields.title'
+    skip: (+params.id - 1) * 5,
+    content_type: "projects",
+    order: "fields.title",
   });
   return {
     props: {
       projects: projects.items,
       total: Math.ceil(allProjects.total / 5),
+      page: params.id,
     },
     revalidate: 10,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [{ params: { id: "2" } }, { params: { id: "3" } }],
+    fallback: true,
   };
 };
