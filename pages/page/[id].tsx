@@ -48,12 +48,13 @@ export default function Home({ projects, total, page }) {
 
   return (
     <div className={styles.container}>
-      <Pagination
+       <Pagination
         count={total}
-        page={+page}
+        page={page}
         showFirstButton
         showLastButton
         onChange={handleChange}
+        style={{ marginBottom: "10px" }}
       />
       <Grid
         container
@@ -64,7 +65,7 @@ export default function Home({ projects, total, page }) {
         alignItems="center"
       >
         {projects.map((project, index) => (
-          <Grid key={project?.sys?.id} item xs={4}>
+           <Grid key={project?.sys?.id} item xs={12} md={4} sm={6} lg={3}>
             <Card variant="outlined" className={classes.root}>
               <CardActionArea>
                 <Image
@@ -93,6 +94,14 @@ export default function Home({ projects, total, page }) {
           </Grid>
         ))}
       </Grid>
+      <Pagination
+        count={total}
+        page={page}
+        showFirstButton
+        showLastButton
+        onChange={handleChange}
+        style={{ marginTop: "10px" }}
+      />
     </div>
   );
 }
@@ -111,7 +120,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: {
       projects: projects.items,
       total: Math.ceil(allProjects.total / 5),
-      page: params.id,
+      page: +params.id,
     },
     revalidate: 10,
   };

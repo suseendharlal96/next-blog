@@ -63,10 +63,10 @@ export default function Home({ project }) {
               alt={project.fields.title}
               layout="responsive"
               height={200}
-              width={600}
+              width={500}
             />
             <CardContent>
-              <Typography gutterBottom variant="h2" component="h2">
+              <Typography gutterBottom variant="h4" component="h2">
                 {project.fields.title}
               </Typography>
               <Typography

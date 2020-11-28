@@ -31,6 +31,7 @@ export default function Home({ projects, total }) {
         showFirstButton
         showLastButton
         onChange={handleChange}
+        style={{ marginBottom: "10px" }}
       />
       <Grid
         container
@@ -41,7 +42,7 @@ export default function Home({ projects, total }) {
         alignItems="center"
       >
         {projects.map((project, index) => (
-          <Grid key={project?.sys?.id} item xs={4}>
+          <Grid key={project?.sys?.id} item xs={12} md={4} sm={6} lg={3}>
             <Card variant="outlined" className={classes.root}>
               {/* <Link href={`/project/${project.fields.title}`}> */}
               <CardActionArea>
@@ -74,6 +75,14 @@ export default function Home({ projects, total }) {
           </Grid>
         ))}
       </Grid>
+      <Pagination
+        count={total}
+        page={1}
+        showFirstButton
+        showLastButton
+        onChange={handleChange}
+        style={{ marginTop: "10px" }}
+      />
     </div>
   );
 }
